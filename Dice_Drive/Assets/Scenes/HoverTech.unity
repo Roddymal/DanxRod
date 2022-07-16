@@ -286,8 +286,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   car: {fileID: 770070780}
-  distance: 6.4
-  height: 1.4
+  distance: 11
+  height: 4
   rotationDamping: 3
   heightDamping: 2
   zoomRatio: 0.5
