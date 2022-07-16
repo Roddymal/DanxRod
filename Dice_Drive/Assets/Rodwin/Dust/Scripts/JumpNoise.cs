@@ -14,9 +14,9 @@ public class JumpNoise : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if (PInput.isJumping&&(movement.isOnGround || movement.isOnAlmostGround))
-        {
-            GetComponent<AudioSource>().Play();
-        }
+		//if (PInput.isJumping&&(movement.isOnGround || movement.isOnAlmostGround))
+  //      {
+  //          GetComponent<AudioSource>().Play();
+  //      }
 	}
 }

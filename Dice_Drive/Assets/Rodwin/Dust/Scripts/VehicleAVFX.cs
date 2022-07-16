@@ -6,19 +6,16 @@ public class VehicleAVFX : MonoBehaviour
 {
 	public ParticleSystem engineThrusterL;	//The left thruster particles
 	public ParticleSystem engineThrusterR;	//The right thruster particles
-    public ParticleSystem[] SandDust;       //The Dust particles
-    public ParticleSystem wallGrind;		//The wall grind particles
+	public ParticleSystem wallGrind;		//The wall grind particles
 	public GameObject lightTrails;			//The game object holding the light trail renderers
 	public float minTrailSpeed = 20f;		//The speed needed to enable the trails
-	public Light[] exhaustLight;		    //The light that appears from thrusters
-    public GameObject JumpEffects;          //The effects that appear when jumping
-    public Color thrustColor;				//The color of the thruster light
+	public Light exhaustLight;				//The light that appears from thrusters
+	public Color thrustColor;				//The color of the thruster light
 	public Color brakeColor;				//The color of the brake light
 	public float engineMinVol = 0f;			//The minimum volume of the engine
 	public float engineMaxVol = .6f;		//The maximum volume of the engine
 	public float engineMinPitch = .3f;		//The minimum pitch of the engine
 	public float engineMaxPitch = .8f;		//The maximum pitch of the engine
-    int thrustcount = 0;                    //used to cut jump thrusters after some time
 
 	PlayerInput input;						//A reference to the player's input
 	VehicleMovement movement;				//A reference to the ship's VehicleMovement script
@@ -38,10 +35,9 @@ public class VehicleAVFX : MonoBehaviour
 		//References and values for the various ship parts
 		engineThrusterL = GameObject.Find("Ship Body/Ship VFX/ThrusterPS-L").GetComponent<ParticleSystem>();
 		engineThrusterR = GameObject.Find("Ship Body/Ship VFX/ThrusterPS-R").GetComponent<ParticleSystem>();
-        //SandDust[] = GameObject.Find("Ship Body/Ship VFX/SandParts").GetComponent<ParticleSystem>();
-        wallGrind = GameObject.Find("Ship Body/Ship VFX/WallGrindPS").GetComponent<ParticleSystem>();
+		wallGrind = GameObject.Find("Ship Body/Ship VFX/WallGrindPS").GetComponent<ParticleSystem>();
 		lightTrails = GameObject.Find("Ship Body/Ship VFX/Trails");
-		//exhaustLight = GameObject.Find("Ship Body/Ship VFX/ExhaustLight").GetComponent<Light>();
+		exhaustLight = GameObject.Find("Ship Body/Ship VFX/ExhaustLight").GetComponent<Light>();
 		thrustColor = new Color(.3f, .6f, .8f);
 		brakeColor = new Color(1f, 0f, 0f);
 	}
@@ -57,13 +53,9 @@ public class VehicleAVFX : MonoBehaviour
 		mainModule = engineThrusterL.main;
 		thrusterStartLife = mainModule.startLifetime.constant;
 
-        //Record the exhaust light's starting intensity and then set it to 0
-        for (int i = 0; i < exhaustLight.Length; i++)
-        {
-            lightStartIntensity = exhaustLight[i].intensity;
-            exhaustLight[i].intensity = 0f;
-        }
-        
+		//Record the exhaust light's starting intensity and then set it to 0
+		lightStartIntensity = exhaustLight.intensity;
+		exhaustLight.intensity = 0f;
 
 		//Stop the wall grind particles of they happen to be playing
 		wallGrind.Stop();
@@ -74,39 +66,8 @@ public class VehicleAVFX : MonoBehaviour
 
 	void Update()
 	{
-        if (movement.isOnGround == true)
-        {
-            for (int i = 0; i < SandDust.Length; i++)
-            {
-
-                SandDust[i].gameObject.SetActive(true);
-
-            }
-           
-        }
-        else
-        {
-            Invoke("CutSand",0.1f);
-           
-        }
-        if (movement.isOnAlmostGround|| movement.isOnGround)
-        {
-            JumpEffects.SetActive(false);
-            thrustcount = 0;
-        }
-        else
-        {
-            if (thrustcount == 0)
-            {
-                JumpEffects.SetActive(true);
-                thrustcount++;
-            }
-            Invoke("CutJumpThrust", 0.55f);
-        }
-
-
-        //Update the thruster particles and light
-        UpdateThrusterParticles();
+		//Update the thruster particles and light
+		UpdateThrusterParticles();
 		UpdateExhaustLight();
 
 		//If the ship is going faster than the minimum trail speed then enable them...
@@ -163,25 +124,17 @@ public class VehicleAVFX : MonoBehaviour
 		//If the ship is moving forward and not braking...
 		if (currentIntensity >= 0f && !input.isBraking)
 		{
-            //... set the light's color and intensity
-            for (int i = 0; i < exhaustLight.Length; i++)
-            {
-                exhaustLight[i].color = thrustColor;
-                exhaustLight[i].intensity = currentIntensity;
-            }
-            
+			//... set the light's color and intensity
+			exhaustLight.color = thrustColor;
+			exhaustLight.intensity = currentIntensity;
 		}
 		//...Otherwise...
 		else
 		{
-            for (int i = 0; i < exhaustLight.Length; i++)
-            {
-                //...set the color to the brake color...
-                exhaustLight[i].color = brakeColor;
-                //...and give it max intensity
-                exhaustLight[i].intensity = lightStartIntensity;
-            }
-           
+			//...set the color to the brake color...
+			exhaustLight.color = brakeColor;
+			//...and give it max intensity
+			exhaustLight.intensity = lightStartIntensity;
 		}
 	}
 
@@ -203,20 +156,4 @@ public class VehicleAVFX : MonoBehaviour
 		//Stop playing the wallgrind particles
 		wallGrind.Stop(true);
 	}
-
-    void CutSand()
-    {
-        for (int i = 0; i < SandDust.Length; i++)
-        {
-
-            SandDust[i].gameObject.SetActive(false);
-
-        }
-    }
-
-
-    void CutJumpThrust()
-    {
-        JumpEffects.SetActive(false);
-    }
 }
