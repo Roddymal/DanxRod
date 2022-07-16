@@ -14,7 +14,7 @@ public class HoverBody : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        rb = GameObject.FindObjectOfType<Rigidbody>();
+        rb = this.GetComponent<Rigidbody>();
         rb.centerOfMass = centreOfMass.transform.localPosition;
     }
 
@@ -27,6 +27,7 @@ public class HoverBody : MonoBehaviour
             if (Physics.Raycast(engine.transform.position, transform.TransformDirection(Vector3.down), out hit, height))
             {
                 rb.AddForceAtPosition(Time.deltaTime * transform.TransformDirection(Vector3.up) * Mathf.Pow(height - hit.distance, 2) / height * stabilization, engine.transform.position);
+                
             }
             Debug.Log(hit.distance);
         }

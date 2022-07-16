@@ -17,7 +17,7 @@ public class HoverController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        rb = GameObject.FindObjectOfType<Rigidbody>();
+        rb = this.GetComponent<Rigidbody>();
         rb.centerOfMass = centreOfMass.transform.localPosition;
     }
 
