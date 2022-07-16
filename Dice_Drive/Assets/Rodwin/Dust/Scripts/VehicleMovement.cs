@@ -8,7 +8,8 @@ public class VehicleMovement : MonoBehaviour
 	public float speed;						//The current forward speed of the ship
 
 	[Header("Drive Settings")]
-	public float driveForce = 17f;			//The force that the engine generates
+	public float driveForce = 17f;          //The force that the engine generates
+	float tempDriveForce = 0f;
 	public float slowingVelFactor = .99f;   //The percentage of velocity the ship maintains when not thrusting (e.g., a value of .99 means the ship loses 1% velocity when not thrusting)
 	public float brakingVelFactor = .95f;   //The percentage of velocty the ship maintains when braking
 	public float angleOfRoll = 30f;			//The angle that the ship "banks" into a turn
@@ -16,7 +17,8 @@ public class VehicleMovement : MonoBehaviour
 	[Header("Hover Settings")]
 	public float hoverHeight = 1.5f;        //The height the ship maintains when hovering
 	public float maxGroundDist = 5f;        //The distance the ship can be above the ground before it is "falling"
-	public float hoverForce = 300f;			//The force of the ship's hovering
+	public float hoverForce = 300f;         //The force of the ship's hovering
+	float tempHoverForce = 0f;
 	public LayerMask whatIsGround;			//A layer mask to determine what layer the ground is on
 	public PIDController hoverPID;			//A PID controller to smooth the ship's hovering
 
@@ -37,7 +39,8 @@ public class VehicleMovement : MonoBehaviour
 		//Get references to the Rigidbody and PlayerInput components
 		rigidBody = GetComponent<Rigidbody>();
 		input = GetComponent<PlayerInput>();
-
+		tempHoverForce = hoverForce;
+		tempDriveForce = driveForce;
 		//Calculate the ship's drag value
 		drag = driveForce / terminalVelocity;
 	}
@@ -176,5 +179,16 @@ public class VehicleMovement : MonoBehaviour
 	{
 		//Returns the total percentage of speed the ship is traveling
 		return rigidBody.velocity.magnitude / terminalVelocity;
+	}
+
+	public void StopCar()
+	{
+		hoverForce = 0f;
+		driveForce = 0f;
+	}
+	public void StartCar()
+	{
+		hoverForce = tempHoverForce;
+		driveForce = tempDriveForce;
 	}
 }
